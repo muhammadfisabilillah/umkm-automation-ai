@@ -1,14 +1,153 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  businesses Business[]
+
+  @@map("users")
+}
+
+model Business {
+  id          String       @id @default(cuid())
+  name        String
+  type        BusinessType
+  description String?
+  industry    String?
+  phone       String?
+  address     String?
+
+  interviewData     Json?
+  painPoints        String[]
+  currentTools      String[]
+  dailyTransactions Int?
+  monthlyRevenue    Float?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workflows    Workflow[]
+  transactions Transaction[]
+
+  @@map("businesses")
+}
+
+enum BusinessType {
+  FOOD_BEVERAGE
+  RETAIL
+  SERVICE
+  ECOMMERCE
+  MANUFACTURING
+  OTHER
+}
+
+model Workflow {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  type        WorkflowType
+
+  config   Json
+  isActive Boolean @default(true)
+
+  generatedByAI Boolean @default(false)
+  confidence    Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@map("workflows")
+}
+
+enum WorkflowType {
+  ORDER_MANAGEMENT
+  INVENTORY_TRACKING
+  CUSTOMER_MANAGEMENT
+  FINANCIAL_TRACKING
+  NOTIFICATION_SYSTEM
+  CUSTOM
+}
+
+model Transaction {
+  id String @id @default(cuid())
+
+  type        TransactionType
+  amount      Float
+  description String?
+  status      TransactionStatus @default(PENDING)
+
+  customerName  String?
+  customerPhone String?
+  customerEmail String?
+
+  metadata Json?
+
+  transactionDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+enum TransactionType {
+  SALE
+  EXPENSE
+  REFUND
+  RECEIVABLE
+  PAYABLE
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+model Conversation {
+  id String @id @default(cuid())
+
+  sessionId String             @unique
+  status    ConversationStatus @default(ACTIVE)
+
+  businessId   String?
+  businessType BusinessType?
+
+  messages Json
+
+  extractedData Json?
+
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("conversations")
+}
+
+enum ConversationStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
 }
