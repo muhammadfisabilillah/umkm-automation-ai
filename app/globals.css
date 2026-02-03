@@ -123,3 +123,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* === PREMIUM ANIMATED BACKGROUND === */
+
+@keyframes meshMove {
+  0% { transform: translate(0%, 0%) rotate(0deg); }
+  50% { transform: translate(10%, -10%) rotate(180deg); }
+  100% { transform: translate(0%, 0%) rotate(360deg); }
+}
+
+@keyframes floatGlow {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-60px); }
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(16,185,129,0.25), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.25), transparent 40%);
+  animation: meshMove 30s ease-in-out infinite;
+  filter: blur(80px);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 70px 70px;
+  pointer-events: none;
+}
