@@ -1,50 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
-import { chatWithAI, type ChatMessage } from "@/lib/ai/groq";
-import { createInterviewMessages } from "@/lib/ai/prompts";
+import { chatWithAI } from "@/lib/ai/groq";
+import { prisma } from "@/lib/prisma";
 
-export const runtime = "nodejs";
+// GET: Ambil daftar sesi (untuk sidebar) ATAU isi chat (untuk layar utama)
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const sessionId = searchParams.get("sessionId");
+  const listAll = searchParams.get("listAll");
 
+  try {
+    // Jika minta daftar semua sesi (untuk sidebar)
+    if (listAll === "true") {
+      const sessions = await prisma.conversation.findMany({
+        select: { sessionId: true, updatedAt: true },
+        orderBy: { updatedAt: 'desc' }
+      });
+      return NextResponse.json(sessions);
+    }
+
+    // Jika minta isi chat dari satu sesi tertentu
+    if (sessionId) {
+      const data = await prisma.conversation.findUnique({ where: { sessionId } });
+      return NextResponse.json(data?.messages || []);
+    }
+
+    return NextResponse.json([]);
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal mengambil data" }, { status: 500 });
+  }
+}
+
+// POST: Tanya AI & Simpan ke database Railway
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { messages } = body as { messages?: ChatMessage[] };
+    const { messages, sessionId } = await req.json();
+    const aiResponse = await chatWithAI(messages);
+    const finalMessages = [...messages, { role: 'assistant', content: aiResponse }];
 
-    // Validate messages: must be an array and each item must have role and content
-    if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json(
-        { error: "Invalid request: 'messages' must be a non-empty array." },
-        { status: 400 }
-      );
-    }
-    for (const msg of messages) {
-      if (!msg || typeof msg.role !== "string" || typeof msg.content !== "string") {
-        return NextResponse.json(
-          { error: "Invalid message format: each message must have 'role' and 'content' as strings." },
-          { status: 400 }
-        );
-      }
-    }
-
-    const fullMessages = createInterviewMessages(messages);
-    const aiResponse = await chatWithAI(fullMessages);
-
-    // Optional: Log success for debugging (remove in production if not needed)
-    console.log("AI response generated successfully.");
-
-    return NextResponse.json({
-      success: true,
-      response: aiResponse,  // Assumed to be a string or object; ensure your client handles it
-    });
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("API ERROR:", errorMessage);  // Log full details server-side
-
-    return NextResponse.json(
-      {
-        error: "Failed to get AI response. Please try again later.",
-        // Removed 'details' to avoid leaking sensitive info
+    await prisma.conversation.upsert({
+      where: { sessionId },
+      update: { messages: finalMessages as any },
+      create: {
+        sessionId,
+        messages: finalMessages as any,
+        status: "ACTIVE",
       },
-      { status: 500 }
-    );
+    });
+
+    return NextResponse.json(aiResponse);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// DELETE: Hapus sesi tertentu
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const sessionId = searchParams.get("sessionId");
+  if (!sessionId) return NextResponse.json({ success: false });
+
+  try {
+    await prisma.conversation.delete({ where: { sessionId } });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ success: false });
   }
 }

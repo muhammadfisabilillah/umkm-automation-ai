@@ -1,170 +1,115 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+"use client";
 
-export default function Home() {
+import React, { useState } from 'react';
+import { 
+  BarChart3, 
+  Package, 
+  Users, 
+  ClipboardCheck, 
+  ArrowRight, 
+  Zap, 
+  ShieldCheck 
+} from 'lucide-react';
+import ChatInterface from "@/components/ui/ChatInterface"; 
+
+export default function BusinessAIApp() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-[#020617] text-slate-100 selection:bg-emerald-500/30 overflow-x-hidden font-sans">
+      {/* Background Gradient Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-emerald-500/10 blur-[120px] rounded-full" />
+        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] bg-blue-500/10 blur-[120px] rounded-full" />
+      </div>
+
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-indigo-600">BantuBisnis AI</h1>
-          <div className="space-x-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Masuk</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/interview">Mulai Gratis</Link>
-            </Button>
+      <nav className="relative z-10 flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        <div className="flex items-center gap-2">
+          <div className="bg-emerald-500 p-1.5 rounded-lg shadow-lg shadow-emerald-500/20">
+            <Zap className="size-5 text-black fill-current" />
           </div>
+          <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+            BantuBisnis.ai
+          </span>
         </div>
+        <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400 uppercase tracking-widest">
+          <a href="#proses" className="hover:text-emerald-400 transition">Proses</a>
+          <a href="#fitur" className="hover:text-emerald-400 transition">Fitur</a>
+        </div>
+        <button className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-emerald-400 transition-all shadow-lg active:scale-95">
+          Dashboard
+        </button>
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h2 className="text-5xl font-bold text-gray-900 mb-6">
-          Otomasi Bisnis UMKM Anda<br />
-          <span className="text-indigo-600">Dalam 15 Menit</span>
-        </h2>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          AI kami akan interview bisnis Anda, lalu otomatis buatkan sistem 
-          custom untuk kelola order, inventory, keuangan, dan customer.
-        </p>
-        <Button size="lg" className="text-lg px-8" asChild>
-          <Link href="/interview">
-            Coba Sekarang - Gratis
-          </Link>
-        </Button>
-        
-        <div className="mt-4 text-sm text-gray-500">
-          ✓ Gratis selamanya untuk fitur dasar  ✓ Tidak perlu kartu kredit
-        </div>
-      </section>
-
-      {/* Problem Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h3 className="text-3xl font-bold text-center mb-12">
-          Masalah yang Kami Selesaikan
-        </h3>
-        <div className="grid md:grid-cols-3 gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>😫 Pencatatan Manual</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                Capek catat pesanan di buku? Sering lupa? Susah hitung untung rugi?
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>💸 Software Mahal</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                Custom software puluhan juta. Ready-made terlalu generic & susah dipakai.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>⏰ Buang Waktu</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                10-15 jam per minggu habis untuk admin. Harusnya fokus ke bisnis!
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Solution Section */}
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
-          <h3 className="text-3xl font-bold text-center mb-12">
-            Solusi Kami
-          </h3>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h4 className="text-2xl font-semibold mb-4">
-                🤖 AI yang Interview Bisnis Anda
-              </h4>
-              <p className="text-gray-600 mb-6">
-                Cukup chat 15 menit dengan AI kami. Jawab pertanyaan tentang bisnis, 
-                workflow, dan masalah yang dihadapi. AI akan paham kebutuhan Anda.
-              </p>
-              
-              <h4 className="text-2xl font-semibold mb-4">
-                ⚡ Sistem Custom Auto-Generated
-              </h4>
-              <p className="text-gray-600 mb-6">
-                AI langsung buatkan sistem yang pas untuk bisnis Anda. Tidak generic, 
-                tapi truly customized sesuai kebutuhan.
-              </p>
-              
-              <h4 className="text-2xl font-semibold mb-4">
-                📱 Terintegrasi dengan Tools Favorit
-              </h4>
-              <p className="text-gray-600">
-                WhatsApp, Google Sheets, payment gateway - semua connect otomatis. 
-                Tidak perlu ganti workflow yang sudah biasa.
-              </p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-8 text-white">
-              <h5 className="text-xl font-semibold mb-4">Contoh Hasil:</h5>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="mr-2">✓</span>
-                  <span>Order otomatis masuk dari WhatsApp</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">✓</span>
-                  <span>Stok berkurang otomatis saat ada order</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">✓</span>
-                  <span>Alert kalau barang mau habis</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">✓</span>
-                  <span>Laporan keuangan auto-generate</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">✓</span>
-                  <span>Database customer dengan riwayat</span>
-                </li>
-              </ul>
-            </div>
+      <section className="relative z-10 max-w-7xl mx-auto px-8 pt-20 pb-32 grid md:grid-cols-2 gap-16 items-center">
+        <div className="space-y-8 text-center md:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-widest">
+            <ShieldCheck className="size-3" /> Digitalisasi UMKM 2.0
+          </div>
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight text-white">
+            Ubah Bisnis Anda <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
+              Menjadi Otomatis.
+            </span>
+          </h1>
+          <p className="text-lg text-slate-400 max-w-lg leading-relaxed mx-auto md:mx-0">
+            AI kami akan mewawancarai proses bisnis Anda, lalu membangun sistem custom untuk Order, Inventory, dan Keuangan dalam hitungan menit.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <button 
+              onClick={() => setIsChatOpen(true)}
+              className="flex items-center justify-center gap-2 bg-emerald-500 text-[#020617] px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.4)] transition-all active:scale-95"
+            >
+              Mulai Interview <ArrowRight className="size-5" />
+            </button>
+            <button className="flex items-center justify-center gap-2 bg-slate-800/50 border border-slate-700 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all text-white">
+              Lihat Demo
+            </button>
           </div>
         </div>
+
+        {/* Feature Cards Showcase */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative">
+          <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] -z-10 rounded-full" />
+          {[
+            { icon: <BarChart3 />, title: "Financial AI", desc: "Laporan keuangan otomatis dari percakapan harian.", color: "text-emerald-400" },
+            { icon: <Package />, title: "Inventory", desc: "Stok terupdate secara real-time untuk setiap pesanan.", color: "text-blue-400" },
+            { icon: <ClipboardCheck />, title: "Smart Order", desc: "Kelola pesanan pelanggan tanpa perlu input manual.", color: "text-cyan-400" },
+            { icon: <Users />, title: "CRM", desc: "Database cerdas untuk mengenal profil pelanggan Anda.", color: "text-purple-400" }
+          ].map((item, idx) => (
+            <div key={idx} className="flex flex-col h-full p-8 bg-slate-900/40 border border-slate-800 rounded-3xl backdrop-blur-md hover:border-emerald-500/50 transition-all group">
+              <div className="size-12 bg-slate-800/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                {React.cloneElement(item.icon as React.ReactElement, { className: `size-6 ${item.color}` })}
+              </div>
+              <h3 className="font-bold text-lg mb-2 text-white">{item.title}</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h3 className="text-4xl font-bold mb-6">
-          Siap Tingkatkan Bisnis Anda?
-        </h3>
-        <p className="text-xl text-gray-600 mb-8">
-          Bergabung dengan ratusan UMKM yang sudah hemat 15 jam per minggu
-        </p>
-        <Button size="lg" className="text-lg px-8" asChild>
-          <Link href="/interview">
-            Mulai Sekarang - 100% Gratis
-          </Link>
-        </Button>
-      </section>
+      {/* MODAL CHAT BOT (OVERLAY) */}
+      {isChatOpen && (
+        <div className="fixed inset-0 z-50 bg-[#020617]/90 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="w-full max-w-6xl h-[85vh] relative animate-in zoom-in-95 duration-300">
+            {/* Mengirim fungsi setIsChatOpen agar tombol X di dalam komponen berfungsi */}
+            <ChatInterface onClose={() => setIsChatOpen(false)} /> 
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
-      <footer className="border-t bg-white py-8">
-        <div className="container mx-auto px-4 text-center text-gray-600">
-          <p>&copy; 2026 BantuBisnis AI. Dibuat untuk UMKM Indonesia 🇮🇩</p>
+      <footer className="relative z-10 border-t border-slate-800 py-12 px-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 opacity-50 text-[10px] font-medium tracking-widest uppercase text-center text-slate-400">
+          <p>© 2026 BantuBisnis.ai - Trusted Business Intelligence</p>
+          <div className="flex gap-8">
+            <span className="cursor-pointer hover:text-white transition">Privasi Keamanan</span>
+            <span className="cursor-pointer hover:text-white transition">API Dokumentasi</span>
+          </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
